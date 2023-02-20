@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:udy_shop/models/product.dart';
+import 'package:udy_shop/pages/product_detail_page.dart';
+import 'package:udy_shop/utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({super.key, required this.product});
@@ -29,9 +31,15 @@ class ProductItem extends StatelessWidget {
             color: Theme.of(context).colorScheme.secondary,
           ),
         ),
-        child: Image.network(
-          product.imageUrl,
-          fit: BoxFit.cover,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context)
+                .pushNamed(AppRoutes.PRODUCT_DETAIL, arguments: product);
+          },
+          child: Image.network(
+            product.imageUrl,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
