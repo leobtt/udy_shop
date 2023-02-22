@@ -8,19 +8,30 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = Provider.of<Product>(context);
+    final Product product = Provider.of<Product>(
+      context,
+      listen: false,
+      // não escuta as notificações( false ), ou seja, não renderiza.
+      // utilizamos quando estamos usando dados imutáveis.
+      // útil para economizar processamento
+      // usando o consumer só onde precisará ser notificado
+      // é uma pequena otimização que pode não ter relevância dependendo do tamanho do app
+    );
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: IconButton(
-            onPressed: () => product.toggleFavorite(),
-            icon: Icon(
-              product.isFavorite ? Icons.favorite : Icons.favorite_border,
+          leading: Consumer<Product>(
+            // child: const Text("texto fixo"), // que pode ser usado no corpo do builder
+            builder: (ctx, product, child) => IconButton(
+              onPressed: () => product.toggleFavorite(),
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+              ),
+              color: Theme.of(context).colorScheme.secondary,
             ),
-            color: Theme.of(context).colorScheme.secondary,
           ),
           title: Text(
             product.title,
