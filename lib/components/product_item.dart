@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/product.dart';
 import 'package:udy_shop/utils/app_routes.dart';
 
@@ -17,6 +18,8 @@ class ProductItem extends StatelessWidget {
       // usando o consumer só onde precisará ser notificado
       // é uma pequena otimização que pode não ter relevância dependendo do tamanho do app
     );
+
+    final Cart cart = Provider.of<Cart>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -38,7 +41,9 @@ class ProductItem extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(product);
+            },
             icon: const Icon(Icons.shopping_cart),
             color: Theme.of(context).colorScheme.secondary,
           ),
