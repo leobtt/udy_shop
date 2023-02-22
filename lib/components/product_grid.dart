@@ -5,12 +5,13 @@ import 'package:udy_shop/models/product.dart';
 import 'package:udy_shop/models/product_list.dart';
 
 class ProductGrid extends StatelessWidget {
-  const ProductGrid({Key? key}) : super(key: key);
-
+  const ProductGrid(this.showFavorite, {Key? key}) : super(key: key);
+  final bool showFavorite;
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductList>(context);
-    final List<Product> loadedProduct = provider.items;
+    final List<Product> loadedProduct =
+        showFavorite ? provider.favoriteItems : provider.items;
 
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
