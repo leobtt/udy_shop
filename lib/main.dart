@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/product_list.dart';
+import 'package:udy_shop/pages/cart_page.dart';
 import 'package:udy_shop/pages/product_detail_page.dart';
 import 'package:udy_shop/pages/product_overview_page.dart';
 import 'package:udy_shop/utils/app_routes.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         home: ProductOverviewPage(),
         routes: {
           AppRoutes.PRODUCT_DETAIL: (_) => const ProductDetailPage(),
+          AppRoutes.CART_PAGE: (_) => CartPage(),
         },
       ),
     );
