@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:udy_shop/components/app_drawer.dart';
 import 'package:udy_shop/components/badge.dart';
 import 'package:udy_shop/components/product_grid.dart';
 import 'package:udy_shop/models/cart.dart';
@@ -68,6 +69,7 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
         padding: const EdgeInsets.all(10.0),
         child: ProductGrid(_showFavoriteOnly),
       ),
+      drawer: const AppDrawer(),
     );
   }
 }
