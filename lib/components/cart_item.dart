@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/cart_item.dart';
 
 class CartItemWidget extends StatelessWidget {
@@ -8,20 +10,41 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-      child: ListTile(
-        leading: CircleAvatar(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: FittedBox(
-              child: Text("${cartItem.price}"),
+    return Dismissible(
+      key: ValueKey(cartItem.id),
+      background: Container(
+        color: Theme.of(context).colorScheme.error,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+        child: const Icon(
+          Icons.delete,
+          size: 40,
+          color: Colors.white,
+        ),
+      ),
+      direction: DismissDirection.endToStart,
+      onDismissed: (_) {
+        Provider.of<Cart>(
+          context,
+          listen: false,
+        ).removeItem(cartItem.productId);
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+        child: ListTile(
+          leading: CircleAvatar(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: FittedBox(
+                child: Text("${cartItem.price}"),
+              ),
             ),
           ),
+          title: Text(cartItem.name),
+          subtitle: Text("Total: R\$ ${cartItem.price * cartItem.quantity}"),
+          trailing: Text("${cartItem.quantity}x"),
         ),
-        title: Text(cartItem.name),
-        subtitle: Text("Total: R\$ ${cartItem.price * cartItem.quantity}"),
-        trailing: Text("${cartItem.quantity}x"),
       ),
     );
   }
