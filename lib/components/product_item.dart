@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:udy_shop/models/product.dart';
+import 'package:udy_shop/models/product_list.dart';
+import 'package:udy_shop/utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -12,19 +15,48 @@ class ProductItem extends StatelessWidget {
         backgroundImage: NetworkImage(product.imageUrl),
       ),
       title: Text(product.name),
-      trailing: Container(
+      trailing: SizedBox(
         width: 100,
         child: Row(
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(AppRoutes.PRODUCT_FORM, arguments: product);
+              },
               color: Theme.of(context).colorScheme.primary,
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                          title: const Text('Tem certeza?'),
+                          content:
+                              const Text('Deseja remover o produto da loja?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Não'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Provider.of<ProductList>(
+                                  context,
+                                  listen: false,
+                                ).removeProduct(product);
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Sim'),
+                            ),
+                          ],
+                        ));
+              },
               color: Theme.of(context).colorScheme.error,
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
             ),
           ],
         ),
