@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:udy_shop/data/dummy_data.dart';
 import 'package:udy_shop/models/product.dart';
 
 class ProductList with ChangeNotifier {
+  final _baseURL = 'https://shop-udemy-ba3a9-default-rtdb.firebaseio.com';
   List<Product> _items = dummyProducts;
 
   List<Product> get items => [..._items];
@@ -15,26 +18,49 @@ class ProductList with ChangeNotifier {
       )
       .toList();
 
-  void addProduct(Product product) {
-    _items.add(product);
+  Future<void> addProduct(Product product) async {
+    final response = await http.post(Uri.parse('$_baseURL/products.json'),
+        body: jsonEncode({
+          "name": product.name,
+          "description": product.description,
+          "price": product.price,
+          "imageUrl": product.imageUrl,
+          "isFavorite": product.isFavorite,
+        }));
+
+    final id = jsonDecode(response.body)['name'];
+    _items.add(
+      Product(
+        id: id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        isFavorite: product.isFavorite,
+      ),
+    );
     notifyListeners();
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) {
     int index = _items.indexWhere((item) => item.id == product.id);
 
     if (index >= 0) {
       _items[index] = product;
       notifyListeners();
     }
+
+    return Future.value();
   }
 
-  void removeProduct(Product product) {
+  Future<void> removeProduct(Product product) {
     _items.removeWhere((item) => item.id == product.id);
     notifyListeners();
+
+    return Future.value();
   }
 
-  void saveProduct(Map<String, Object> data) {
+  Future<void> saveProduct(Map<String, Object> data) {
     bool hasId = data['id'] != null;
 
     final newProduct = Product(
@@ -46,9 +72,9 @@ class ProductList with ChangeNotifier {
     );
 
     if (hasId) {
-      updateProduct(newProduct);
+      return updateProduct(newProduct);
     } else {
-      addProduct(newProduct);
+      return addProduct(newProduct);
     }
   }
 
