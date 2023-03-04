@@ -11,14 +11,13 @@ class ProductGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(
       context,
-      listen: false,
+      listen: true,
       // não escuta as notificações( false ), ou seja, não renderiza.
       // utilizamos quando estamos usando dados imutáveis.
       // útil para economizar processamento
       // usando o consumer só onde precisará ser notificado
       // é uma pequena otimização que pode não ter relevância dependendo do tamanho do app
     );
-
     final Cart cart = Provider.of<Cart>(context, listen: false);
 
     return ClipRRect(
