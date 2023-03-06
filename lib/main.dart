@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:udy_shop/models/cart.dart';
-import 'package:udy_shop/models/order._list.dart';
+import 'package:udy_shop/models/order_list.dart';
 import 'package:udy_shop/models/product_list.dart';
 import 'package:udy_shop/pages/cart_page.dart';
 import 'package:udy_shop/pages/orders_page.dart';
