@@ -3,12 +3,12 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:udy_shop/data/dummy_data.dart';
 import 'package:udy_shop/models/product.dart';
 
 class ProductList with ChangeNotifier {
-  final _baseURL = 'https://shop-udemy-ba3a9-default-rtdb.firebaseio.com';
-  List<Product> _items = dummyProducts;
+  final _baseUrl =
+      'https://shop-udemy-ba3a9-default-rtdb.firebaseio.com/products';
+  List<Product> _items = [];
 
   List<Product> get items => [..._items];
   int get itemsCount => _items.length;
@@ -18,8 +18,32 @@ class ProductList with ChangeNotifier {
       )
       .toList();
 
+  Future<void> loadedProducts() async {
+    try {
+      _items.clear();
+      final response = await http.get(Uri.parse('$_baseUrl.json'));
+      if (response.body == 'null') return;
+      Map<String, dynamic> data = jsonDecode(response.body);
+      data.forEach((productId, productData) {
+        _items.add(
+          Product(
+            id: productId,
+            name: productData['name'],
+            description: productData['description'],
+            price: productData['price'],
+            imageUrl: productData['imageUrl'],
+            isFavorite: productData['isFavorite'],
+          ),
+        );
+      });
+      notifyListeners();
+    } catch (e) {
+      print('errpr $e');
+    }
+  }
+
   Future<void> addProduct(Product product) async {
-    final response = await http.post(Uri.parse('$_baseURL/products.json'),
+    final response = await http.post(Uri.parse('$_baseUrl.json'),
         body: jsonEncode({
           "name": product.name,
           "description": product.description,
@@ -42,15 +66,24 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     int index = _items.indexWhere((item) => item.id == product.id);
 
     if (index >= 0) {
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+        body: jsonEncode(
+          {
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "imageUrl": product.imageUrl
+          },
+        ),
+      );
       _items[index] = product;
       notifyListeners();
     }
-
-    return Future.value();
   }
 
   Future<void> removeProduct(Product product) {

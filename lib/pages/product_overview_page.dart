@@ -4,6 +4,7 @@ import 'package:udy_shop/components/app_drawer.dart';
 import 'package:udy_shop/components/badge.dart';
 import 'package:udy_shop/components/product_grid.dart';
 import 'package:udy_shop/models/cart.dart';
+import 'package:udy_shop/models/product_list.dart';
 import 'package:udy_shop/utils/app_routes.dart';
 
 enum FilterOptions {
@@ -20,6 +21,18 @@ class ProductOverviewPage extends StatefulWidget {
 
 class _ProductOverviewPageState extends State<ProductOverviewPage> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(
+      context,
+      listen: false,
+    ).loadedProducts().then((_) {
+      setState(() => _isLoading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +80,9 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: ProductGrid(_showFavoriteOnly),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ProductGrid(_showFavoriteOnly),
       ),
       drawer: const AppDrawer(),
     );
