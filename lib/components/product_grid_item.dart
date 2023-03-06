@@ -28,7 +28,17 @@ class ProductGridItem extends StatelessWidget {
           leading: Consumer<Product>(
             // child: const Text("texto fixo"), // que pode ser usado no corpo do builder
             builder: (ctx, product, child) => IconButton(
-              onPressed: () => product.toggleFavorite(),
+              onPressed: () async {
+                try {
+                  await product.toggleFavorite();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                    ),
+                  );
+                }
+              },
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
