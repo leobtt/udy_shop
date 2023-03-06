@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/order._list.dart';
@@ -11,7 +12,8 @@ import 'package:udy_shop/pages/product_overview_page.dart';
 import 'package:udy_shop/pages/products_page.dart';
 import 'package:udy_shop/utils/app_routes.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 

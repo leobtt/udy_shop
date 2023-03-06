@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:udy_shop/exceptions/http_exception.dart';
 
@@ -21,19 +22,18 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  toggleFavorite() async {
+  Future<void> toggleFavorite() async {
     isFavorite = !isFavorite;
     notifyListeners();
 
-    const baseUrl =
-        'https://shop-udemy-ba3a9-default-rtdb.firebaseio.com/products';
+    final baseUrl = '${dotenv.get("API_URL")}products';
     final response = await http.patch(
       Uri.parse('$baseUrl/$id.json'),
       body: jsonEncode({
         "isFavorite": isFavorite,
       }),
     );
-    print(" reponse -- ${response.statusCode}");
+
     if (response.statusCode >= 400) {
       isFavorite = !isFavorite;
       throw HttpException(

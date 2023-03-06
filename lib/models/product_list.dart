@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:udy_shop/exceptions/http_exception.dart';
 import 'package:udy_shop/models/product.dart';
 
 class ProductList with ChangeNotifier {
-  final _baseUrl =
-      'https://shop-udemy-ba3a9-default-rtdb.firebaseio.com/products';
+  final _baseUrl = '${dotenv.get("API_URL")}products';
   List<Product> _items = [];
 
   List<Product> get items => [..._items];
@@ -20,6 +19,7 @@ class ProductList with ChangeNotifier {
       .toList();
 
   Future<void> loadedProducts() async {
+    print('this is base $_baseUrl');
     try {
       _items.clear();
       final response = await http.get(Uri.parse('$_baseUrl.json'));
