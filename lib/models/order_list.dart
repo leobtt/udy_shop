@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/order.dart';
 
@@ -10,16 +13,37 @@ class OrderList with ChangeNotifier {
   List<Order> get items => [..._items];
   int get itemsCount => _items.length;
 
-  void addOrder(Cart cart) {
+  Future<void> addOrder(Cart cart) async {
+    final date = DateTime.now();
+    final response = await http.post(
+      Uri.parse('${dotenv.get("API_URL")}orders.json'),
+      body: jsonEncode(
+        {
+          "total": cart.totalAmount,
+          "date": date.toIso8601String(),
+          "products": cart.items.values
+              .map((cartItem) => {
+                    'id': cartItem.id,
+                    'productId': cartItem.productId,
+                    'name': cartItem.name,
+                    'quantity': cartItem.quantity,
+                    'price': cartItem.price,
+                  })
+              .toList(),
+        },
+      ),
+    );
     _items.insert(
       0,
       Order(
         id: Random().nextDouble.toString(),
         total: cart.totalAmount,
         products: cart.items.values.toList(),
-        date: DateTime.now(),
+        date: date,
       ),
     );
     notifyListeners();
+
+    return Future.value();
   }
 }
