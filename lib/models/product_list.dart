@@ -19,7 +19,6 @@ class ProductList with ChangeNotifier {
       .toList();
 
   Future<void> loadedProducts() async {
-    print('this is base $_baseUrl');
     try {
       _items.clear();
       final response = await http.get(Uri.parse('$_baseUrl.json'));

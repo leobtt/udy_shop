@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:udy_shop/models/cart.dart';
+import 'package:udy_shop/models/cart_item.dart';
 import 'package:udy_shop/models/order.dart';
 
 class OrderList with ChangeNotifier {
@@ -43,7 +44,39 @@ class OrderList with ChangeNotifier {
       ),
     );
     notifyListeners();
+  }
 
-    return Future.value();
+  Future<void> loadedOrders() async {
+    try {
+      _items.clear();
+      final response =
+          await http.get(Uri.parse('${dotenv.get('API_URL')}orders.json'));
+      if (response.body == 'null') return;
+      Map<String, dynamic> data = jsonDecode(response.body);
+      print("data $data");
+      data.forEach(
+        (orderId, orderData) {
+          _items.add(
+            Order(
+              id: orderId,
+              total: orderData['total'],
+              date: DateTime.parse(orderData['date']),
+              products: (orderData['products'] as List<dynamic>).map((item) {
+                return CartItem(
+                  id: item['id'],
+                  productId: item['productId'],
+                  name: item['name'],
+                  quantity: item['quantity'],
+                  price: item['price'],
+                );
+              }).toList(),
+            ),
+          );
+        },
+      );
+      notifyListeners();
+    } catch (e) {
+      print('errpr $e');
+    }
   }
 }
