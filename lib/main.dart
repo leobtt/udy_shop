@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/order_list.dart';
 import 'package:udy_shop/models/product_list.dart';
+import 'package:udy_shop/pages/auth_page.dart';
 import 'package:udy_shop/pages/cart_page.dart';
 import 'package:udy_shop/pages/orders_page.dart';
 import 'package:udy_shop/pages/product_detail_page.dart';
@@ -38,8 +39,9 @@ class MyApp extends StatelessWidget {
             secondary: Colors.deepOrange,
           ),
         ),
-        home: ProductOverviewPage(),
+        // home: ProductOverviewPage(),
         routes: {
+          AppRoutes.AUTH: (_) => const AuthPage(),
           AppRoutes.HOME: (_) => ProductOverviewPage(),
           AppRoutes.PRODUCT_DETAIL: (_) => const ProductDetailPage(),
           AppRoutes.CART_PAGE: (_) => const CartPage(),
