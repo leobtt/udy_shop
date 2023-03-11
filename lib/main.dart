@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:udy_shop/models/auth.dart';
 import 'package:udy_shop/models/cart.dart';
 import 'package:udy_shop/models/order_list.dart';
 import 'package:udy_shop/models/product_list.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductList()),
         ChangeNotifierProvider(create: (_) => Cart()),
         ChangeNotifierProvider(create: (_) => OrderList()),
+        ChangeNotifierProvider(create: (_) => Auth())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -32,6 +32,8 @@ class AuthPage extends StatelessWidget {
                 Container(
                   // .. cascade operator - retorna a própria váriavel, alguns retornam void, por isso usando o cascade conseguimos encadear
                   transform: Matrix4.rotationZ(-8 * pi / 180)..translate(-10.0),
+
+                  margin: const EdgeInsets.only(bottom: 20),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
                   decoration: BoxDecoration(
