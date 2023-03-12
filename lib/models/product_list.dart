@@ -7,6 +7,11 @@ import 'package:udy_shop/exceptions/http_exception.dart';
 import 'package:udy_shop/models/product.dart';
 
 class ProductList with ChangeNotifier {
+  String _token;
+
+  ProductList(this._token, this._items);
+  // passo os items nos segundo para não perder os items que já foram carregados quando atualizar o provider
+
   final _baseUrl = '${dotenv.get("API_URL")}products';
   List<Product> _items = [];
 
@@ -21,7 +26,7 @@ class ProductList with ChangeNotifier {
   Future<void> loadedProducts() async {
     try {
       _items.clear();
-      final response = await http.get(Uri.parse('$_baseUrl.json'));
+      final response = await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
       if (response.body == 'null') return;
       Map<String, dynamic> data = jsonDecode(response.body);
       data.forEach((productId, productData) {
