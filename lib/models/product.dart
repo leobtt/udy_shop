@@ -25,7 +25,7 @@ class Product with ChangeNotifier {
   Future<void> toggleFavorite(String token, String uid) async {
     isFavorite = !isFavorite;
 
-    final baseUrl = '${dotenv.get("API_URL")}userFavorite';
+    final baseUrl = '${dotenv.get("API_URL")}userFavorites';
     final response = await http.put(
       Uri.parse('$baseUrl/$uid/$id.json?auth=$token'),
       body: jsonEncode(isFavorite),

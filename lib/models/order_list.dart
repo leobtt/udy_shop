@@ -11,8 +11,13 @@ import 'package:udy_shop/models/order.dart';
 class OrderList with ChangeNotifier {
   List<Order> _items;
   final String _token;
+  final String _uid;
 
-  OrderList([this._token = '', this._items = const []]);
+  OrderList([
+    this._token = '',
+    this._uid = '',
+    this._items = const [],
+  ]);
 
   List<Order> get items => [..._items];
   int get itemsCount => _items.length;
@@ -20,7 +25,7 @@ class OrderList with ChangeNotifier {
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
     final response = await http.post(
-      Uri.parse('${dotenv.get("API_URL")}orders.json?auth=$_token'),
+      Uri.parse('${dotenv.get("API_URL")}orders/$_uid.json?auth=$_token'),
       body: jsonEncode(
         {
           "total": cart.totalAmount,
@@ -54,8 +59,8 @@ class OrderList with ChangeNotifier {
       List<Order> items = [];
 
       items.clear();
-      final response = await http
-          .get(Uri.parse('${dotenv.get('API_URL')}orders.json?auth=$_token'));
+      final response = await http.get(
+          Uri.parse('${dotenv.get('API_URL')}orders/$_uid.json?auth=$_token'));
       if (response.body == 'null') return;
       Map<String, dynamic> data = jsonDecode(response.body);
       print("data $data");

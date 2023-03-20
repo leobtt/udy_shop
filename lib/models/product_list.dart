@@ -9,11 +9,17 @@ import 'package:udy_shop/models/product.dart';
 class ProductList with ChangeNotifier {
   List<Product> _items = [];
   String _token;
+  String _uid;
 
-  ProductList([this._token = '', this._items = const []]);
+  ProductList([
+    this._token = '',
+    this._uid = '',
+    this._items = const [],
+  ]);
   // passo os items nos segundo para não perder os items que já foram carregados quando atualizar o provider
 
   final _baseUrl = '${dotenv.get("API_URL")}products';
+  final _baseUrlFav = '${dotenv.get("API_URL")}userFavorites';
 
   List<Product> get items => [..._items];
   int get itemsCount => _items.length;
@@ -28,8 +34,14 @@ class ProductList with ChangeNotifier {
       _items.clear();
       final response = await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
       if (response.body == 'null') return;
+      final favResponse =
+          await http.get(Uri.parse('$_baseUrlFav/$_uid.json?auth=$_token'));
+      Map<String, dynamic> favData =
+          favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
+
       Map<String, dynamic> data = jsonDecode(response.body);
       data.forEach((productId, productData) {
+        final isFavorite = favData[productId] ?? false;
         _items.add(
           Product(
             id: productId,
@@ -37,6 +49,7 @@ class ProductList with ChangeNotifier {
             description: productData['description'],
             price: productData['price'],
             imageUrl: productData['imageUrl'],
+            isFavorite: isFavorite,
           ),
         );
       });
