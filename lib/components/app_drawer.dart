@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:udy_shop/models/auth.dart';
 import 'package:udy_shop/utils/app_routes.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -35,6 +37,15 @@ class AppDrawer extends StatelessWidget {
           onTap: () => Navigator.of(context).pushReplacementNamed(
             AppRoutes.PRODUCTS,
           ),
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text("Sair"),
+          onTap: () {
+            Provider.of<Auth>(context, listen: false).logout();
+            Navigator.pushReplacementNamed(context, AppRoutes.AUTH_OR_HOME);
+          },
         ),
       ]),
     );
