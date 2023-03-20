@@ -9,7 +9,10 @@ import 'package:udy_shop/models/cart_item.dart';
 import 'package:udy_shop/models/order.dart';
 
 class OrderList with ChangeNotifier {
-  List<Order> _items = [];
+  List<Order> _items;
+  final String _token;
+
+  OrderList(this._token, this._items);
 
   List<Order> get items => [..._items];
   int get itemsCount => _items.length;
@@ -17,7 +20,7 @@ class OrderList with ChangeNotifier {
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
     final response = await http.post(
-      Uri.parse('${dotenv.get("API_URL")}orders.json'),
+      Uri.parse('${dotenv.get("API_URL")}orders.json?auth=$_token'),
       body: jsonEncode(
         {
           "total": cart.totalAmount,
@@ -48,15 +51,17 @@ class OrderList with ChangeNotifier {
 
   Future<void> loadedOrders() async {
     try {
-      _items.clear();
-      final response =
-          await http.get(Uri.parse('${dotenv.get('API_URL')}orders.json'));
+      List<Order> items = [];
+
+      items.clear();
+      final response = await http
+          .get(Uri.parse('${dotenv.get('API_URL')}orders.json?auth=$_token'));
       if (response.body == 'null') return;
       Map<String, dynamic> data = jsonDecode(response.body);
       print("data $data");
       data.forEach(
         (orderId, orderData) {
-          _items.add(
+          items.add(
             Order(
               id: orderId,
               total: orderData['total'],
@@ -74,6 +79,8 @@ class OrderList with ChangeNotifier {
           );
         },
       );
+
+      _items = items.reversed.toList();
       notifyListeners();
     } catch (e) {
       print('errpr $e');

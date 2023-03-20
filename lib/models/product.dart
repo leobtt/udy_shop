@@ -22,24 +22,22 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String token, String uid) async {
     isFavorite = !isFavorite;
-    notifyListeners();
 
-    final baseUrl = '${dotenv.get("API_URL")}products';
-    final response = await http.patch(
-      Uri.parse('$baseUrl/$id.json'),
-      body: jsonEncode({
-        "isFavorite": isFavorite,
-      }),
+    final baseUrl = '${dotenv.get("API_URL")}userFavorite';
+    final response = await http.put(
+      Uri.parse('$baseUrl/$uid/$id.json?auth=$token'),
+      body: jsonEncode(isFavorite),
     );
 
     if (response.statusCode >= 400) {
-      isFavorite = !isFavorite;
+      isFavorite = false;
       throw HttpException(
         msg: 'Não foi possível favoritar o produto.',
         statusCode: response.statusCode,
       );
     }
+    notifyListeners();
   }
 }

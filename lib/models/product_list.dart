@@ -37,7 +37,6 @@ class ProductList with ChangeNotifier {
             description: productData['description'],
             price: productData['price'],
             imageUrl: productData['imageUrl'],
-            isFavorite: productData['isFavorite'],
           ),
         );
       });
@@ -48,13 +47,12 @@ class ProductList with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    final response = await http.post(Uri.parse('$_baseUrl.json'),
+    final response = await http.post(Uri.parse('$_baseUrl.json?auth=$_token'),
         body: jsonEncode({
           "name": product.name,
           "description": product.description,
           "price": product.price,
           "imageUrl": product.imageUrl,
-          "isFavorite": product.isFavorite,
         }));
 
     final id = jsonDecode(response.body)['name'];
@@ -65,7 +63,6 @@ class ProductList with ChangeNotifier {
         description: product.description,
         price: product.price,
         imageUrl: product.imageUrl,
-        isFavorite: product.isFavorite,
       ),
     );
     notifyListeners();
@@ -76,7 +73,7 @@ class ProductList with ChangeNotifier {
 
     if (index >= 0) {
       final response = await http.patch(
-        Uri.parse('$_baseUrl/${product.id}.json'),
+        Uri.parse('$_baseUrl/${product.id}.json?auth=$_token'),
         body: jsonEncode(
           {
             "name": product.name,
@@ -100,7 +97,7 @@ class ProductList with ChangeNotifier {
       notifyListeners();
 
       final response = await http.delete(
-        Uri.parse('$_baseUrl/${product.id}'),
+        Uri.parse('$_baseUrl/${product.id}.json?auth=$_token'),
       );
 
       if (response.statusCode >= 400) {
